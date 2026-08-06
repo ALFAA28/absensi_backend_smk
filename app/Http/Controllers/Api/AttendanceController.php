@@ -39,6 +39,20 @@ class AttendanceController extends Controller
             $query->whereBetween('attendances.date', [$start, $end]);
         }
 
+        if ($request->filled('semester') && $request->filled('tahun')) {
+            $tahun = $request->tahun;
+            if ($request->semester == 'genap') {
+                $start = $tahun . '-01-01';
+                $end = $tahun . '-06-30';
+            } else if ($request->semester == 'ganjil') {
+                $start = $tahun . '-07-01';
+                $end = $tahun . '-12-31';
+            }
+            if (isset($start) && isset($end)) {
+                $query->whereBetween('attendances.date', [$start, $end]);
+            }
+        }
+
         if ($request->filled('subject_id')) {
             $query->where('attendances.subject_id', $request->subject_id);
         }
