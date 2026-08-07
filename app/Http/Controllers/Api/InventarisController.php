@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Inventaris;
 use App\Models\Peminjaman;
 
@@ -23,13 +24,20 @@ class InventarisController extends Controller
     // POST /api/inventaris — Tambah barang baru
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'kode' => 'required|string|unique:inventaris,kode',
             'nama' => 'required|string|max:255',
             'kategori' => 'required|string|max:100',
             'jumlah' => 'required|integer|min:0',
             'kondisi' => 'required|string|in:Baik,Rusak Ringan,Rusak Berat',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
         $barang = Inventaris::create($request->only(['kode', 'nama', 'kategori', 'jumlah', 'kondisi']));
 
@@ -47,13 +55,20 @@ class InventarisController extends Controller
             return response()->json(['message' => 'Barang tidak ditemukan'], 404);
         }
 
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'kode' => 'required|string|unique:inventaris,kode,' . $id,
             'nama' => 'required|string|max:255',
             'kategori' => 'required|string|max:100',
             'jumlah' => 'required|integer|min:0',
             'kondisi' => 'required|string|in:Baik,Rusak Ringan,Rusak Berat',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
         $barang->update($request->only(['kode', 'nama', 'kategori', 'jumlah', 'kondisi']));
 
@@ -92,13 +107,20 @@ class InventarisController extends Controller
     // POST /api/peminjaman — Catat peminjaman baru + kurangi stok
     public function pinjam(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'inventaris_id' => 'required|exists:inventaris,id',
             'nama_peminjam' => 'required|string|max:255',
             'tanggal_pinjam' => 'required|date',
             'jumlah' => 'required|integer|min:1',
             'keterangan' => 'nullable|string',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
         $barang = Inventaris::find($request->inventaris_id);
 
