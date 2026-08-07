@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\SubjectController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\ClassroomController;
 use App\Http\Controllers\Api\AcademicBatchController;
+use App\Http\Controllers\Api\InventarisController;
 // Endpoint Publik (Bisa diakses tanpa token)
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -64,4 +65,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user()->load('classroom');
     });
+
+    // Rute Inventaris Barang (Sarpras)
+    Route::get('/inventaris', [InventarisController::class, 'index']);
+    Route::post('/inventaris', [InventarisController::class, 'store']);
+    Route::put('/inventaris/{id}', [InventarisController::class, 'update']);
+    Route::delete('/inventaris/{id}', [InventarisController::class, 'destroy']);
+
+    // Rute Peminjaman Barang
+    Route::get('/peminjaman', [InventarisController::class, 'riwayatPeminjaman']);
+    Route::post('/peminjaman', [InventarisController::class, 'pinjam']);
+    Route::put('/peminjaman/{id}/kembalikan', [InventarisController::class, 'kembalikan']);
 });
+
