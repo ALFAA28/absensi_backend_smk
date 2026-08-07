@@ -73,6 +73,15 @@ class AttendanceController extends Controller
             });
         }
 
+        // Pencarian berdasarkan Nama Siswa atau NISN
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('students.name', 'like', '%' . $search . '%')
+                  ->orWhere('students.nisn', 'like', '%' . $search . '%');
+            });
+        }
+
         $attendances = $query->orderBy('attendances.date', 'desc')
             ->limit(500)
             ->get();
