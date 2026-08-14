@@ -1,0 +1,39 @@
+﻿-- Table Definition
+CREATE TABLE "public"."sessions" (
+    "id" varchar(255) NOT NULL,
+    "user_id" int8,
+    "ip_address" varchar(45),
+    "user_agent" text,
+    "payload" text NOT NULL,
+    "last_activity" int4 NOT NULL,
+    PRIMARY KEY ("id")
+);
+
+INSERT INTO "public"."sessions" ("id", "user_id", "ip_address", "user_agent", "payload", "last_activity") VALUES
+('0kP2r86FVR43CWgU6k90oQgIVOEn5nkWoHhYAhiY', NULL, '127.0.0.1', 'Go-http-client/1.1', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiNGUzblNDek5XTlRVZG5HYkl5azRFQVFDOGtNOEQ0OUV1VXhDSzZ1TiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1785977609),
+('12c3HBRFZC8JmeYm6gtsf5cvsMXzRUTycchON1r2', NULL, '127.0.0.1', 'Go-http-client/1.1', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiM2poZUVOWlB3Ynd2dzAxWTJSMlluanFIUkpPcmx5Yjk1UDRoR1RtSiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1786067958),
+('1rwBkN8zuPqHtzSjw6o2BwLNxnIXsgdhREqI6XgI', NULL, '127.0.0.1', 'Go-http-client/2.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiWWhpUmFLcHlzdU1hTE5ROHVRZUl3ZkJ5dHFEblFWN0JzSktlU0ZnWCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDQ6Imh0dHA6Ly9hYnNlbnNpLWJhY2tlbmQtc21rLWIwMzcub25yZW5kZXIuY29tIjtzOjU6InJvdXRlIjtOO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1786025743),
+('5kYywGpqSUSYzEma7B8R8TRzLOYUT6Rn0x0ospvS', NULL, '127.0.0.1', 'Go-http-client/2.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiaThjWHNjYlZkTmZJSFVlbU5jQjJ1YkJQNzlFMXBwY05SWUlrT2V3TSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzk6Imh0dHA6Ly9hYnNlbnNpLWJhY2tlbmQtc21rLm9ucmVuZGVyLmNvbSI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1785896913),
+('72xitibArpawLpgzdyE5ewx2EqtVPK6Nkhazfrp7', NULL, '127.0.0.1', 'Go-http-client/1.1', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiMmNERTI4bDJMa3pwY21Vb0pObGU4ZlJMU0JXQXo4MUY1VGh1cE9TRyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1785896552),
+('AUJbaasKI1W7GaUmtlHDN4L6H2zEuWrfmhTmUmKA', NULL, '127.0.0.1', 'Go-http-client/2.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoicXhyNTRIZE5FcDlDbkVVRjJDOTRjTjQ5M1RtVlZjVHZ2M3o5Zm93byI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDQ6Imh0dHA6Ly9hYnNlbnNpLWJhY2tlbmQtc21rLWIwMzcub25yZW5kZXIuY29tIjtzOjU6InJvdXRlIjtOO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1786065950),
+('Aw7S8anpZPfYo2ROpF9ebBh7zcGebZwY3Z7eqXf6', NULL, '127.0.0.1', 'Go-http-client/2.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoidERoZlZTUnB2STdoSngxN3NKQWY5cUdFUm1TVTgxY0EyTHpTeU9QdSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDQ6Imh0dHA6Ly9hYnNlbnNpLWJhY2tlbmQtc21rLWdwaXcub25yZW5kZXIuY29tIjtzOjU6InJvdXRlIjtOO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1785987280),
+('DZpQ3Vx5tmGQNpJbezjBtuzYj1kpOjSuzKXKnprP', NULL, '127.0.0.1', 'Go-http-client/1.1', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiN0ZwQVZFV3p6dWFzZUw1akt2OFZ5Sm9vQ3g2dVY4aGMzbHEwQXMyYSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1786066179),
+('F4qz8Mkn03wvprHMCacnAdkTVIghvFzLBEjk5LsU', NULL, '127.0.0.1', 'Go-http-client/1.1', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiTTRNeVZZYTJzM0VaRjcwM0NoOEtHVnpuVlR4d3FEQlpKTEVaNm1qeiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1785896598),
+('GLmefkVRraCTwTzwX69RpZnYqU4m0AxsLV7Rr6j8', NULL, '127.0.0.1', 'Go-http-client/1.1', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiTDg1eGdlSm5KVEZEeW9wNFd1bThxT0U2bENOMUlSQVNTbndhdWo1ciI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1786065942),
+('LWilBKrnxiiNMZPjuyrGWiTilNhwJo6C5GRQaXSr', NULL, '127.0.0.1', 'Go-http-client/1.1', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoidUNOM3kwd0pZd3g3YzRtMjZjY1J6OVdPeXZzalkxNzR4UEwxbWVMOCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1786025689),
+('NL40CKGPmXLIBzvaWHpho3V27BBmNl5cRB2UYrou', NULL, '127.0.0.1', 'Go-http-client/2.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiOTc2dDB4OUJPcTJXem5JMGJJVU9tQklKNkhvVzkxNDVqZzVwWXhJQSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzk6Imh0dHA6Ly9hYnNlbnNpLWJhY2tlbmQtc21rLm9ucmVuZGVyLmNvbSI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1785896599),
+('Pn1TyB90b9rIRJc6IND9GIhDfSpHvNgqD2vs3Ac0', NULL, '127.0.0.1', 'curl/8.21.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiclNDRDBHQTJaWlI0TjZzOXRJdldWdnd3RXU1NWc4R0JOejdTa2FrciI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDQ6Imh0dHA6Ly9hYnNlbnNpLWJhY2tlbmQtc21rLWIwMzcub25yZW5kZXIuY29tIjtzOjU6InJvdXRlIjtOO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1786066437),
+('ROhB3HaV4ef9lPwdFQCITCmyV5bhSqisrnuGv2h4', NULL, '127.0.0.1', 'Go-http-client/1.1', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiTDZTQ0E4ZlkxVU54TFRUeWRZeEtZV3c1dDVCYU9jQ0plMVRydm9vWiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1785896912),
+('RqFZ2nuMr6rVMkZTmEElDutf7lIapqKquhGU2Iom', NULL, '127.0.0.1', 'python-requests/2.32.5', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiS2RvcmQxQTd5bUJ3d3VQZnRwVFFoUjFFZEk5MWw4ejFHZHRXbUdkYiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDQ6Imh0dHA6Ly9hYnNlbnNpLWJhY2tlbmQtc21rLWIwMzcub25yZW5kZXIuY29tIjtzOjU6InJvdXRlIjtOO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1786075282),
+('ST4YonZDkF2J36c9hAF7OTOvhKkKSq1TWMQAbRVP', NULL, '127.0.0.1', 'Go-http-client/1.1', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiTDlEWWpwaEVRaG52NGZmNU1jQTM1NnExRHdicHNPVlR4OVFpbDFHcCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1785987279),
+('W5ay2oUhnFnoqL1vwOQSA3qsRb5bGqohuqfH8XxL', NULL, '127.0.0.1', 'Go-http-client/2.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiNmhyR2czYURqVG1ReVlVZ3RjSXR1NEo4c3BrM25EUzk4ZG5RZW5oMyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDQ6Imh0dHA6Ly9hYnNlbnNpLWJhY2tlbmQtc21rLWIwMzcub25yZW5kZXIuY29tIjtzOjU6InJvdXRlIjtOO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1786066180),
+('ebP6hAZ1x8r9eRibnCE17D6JvcmKXh37QghTZm2w', NULL, '127.0.0.1', 'Go-http-client/1.1', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiUFI3TGtYTWdqaWltRk1VOFdwNjV4dnI5Q3h5eWhIQXFlN09tWW5wZyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1786025739),
+('gpxc07CC9t9HRBSNdbSnitPZ3CEotuLSAhryO2tM', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoicVJ3eEhkVEZ0S1J6bHVmY0h3RHgwNDNVMzEyUmZ4NVRlS2k3eDhqSyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDQ6Imh0dHA6Ly9hYnNlbnNpLWJhY2tlbmQtc21rLWdwaXcub25yZW5kZXIuY29tIjtzOjU6InJvdXRlIjtOO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1785988044),
+('ih4G7A8mBdFzs3XYFGQ31QZGqncKADFlDvOlSwxI', NULL, '127.0.0.1', 'Go-http-client/1.1', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiYW9qcENFRTF2VEUzMGpLcndHM1lDODlCeFVhRnVScndJbWtFbWtKMSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1785987230),
+('jaPl5xV5e821ndE9h4tO7tWkmo2NJJcjIlvc7hv5', NULL, '127.0.0.1', 'Go-http-client/2.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiNnhSOUtTazBtM0pzekVOUThQeGE3ZEExZ2Vuc2loUUhnV2ZuaWtCUCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzk6Imh0dHA6Ly9hYnNlbnNpLWJhY2tlbmQtc21rLm9ucmVuZGVyLmNvbSI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1785977610),
+('udQjAqtegygu3ajxjnGKYxeq61i2MrlltqjDmlI2', NULL, '127.0.0.1', 'Go-http-client/2.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiN2hLbEV2UWRCWmpiYVdPNDhHM2N2Q2l4aGdxb25VOGg4Mk1mZ2kxRyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDQ6Imh0dHA6Ly9hYnNlbnNpLWJhY2tlbmQtc21rLWIwMzcub25yZW5kZXIuY29tIjtzOjU6InJvdXRlIjtOO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1786067959);
+
+-- Indices
+CREATE INDEX sessions_user_id_index ON public.sessions USING btree (user_id);
+CREATE INDEX sessions_last_activity_index ON public.sessions USING btree (last_activity);
+
