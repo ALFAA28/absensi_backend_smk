@@ -20,21 +20,21 @@ class DatabaseSeeder extends Seeder
         // Contoh membuat akun via php artisan tinker
         User::create([
             'name' => 'Staf Sarpras',
-            'email' => 'sarpras@sekolah.com',
+            'email' => 'sarpras@gmail.com',
             'password' => bcrypt('pw123'),
             'role' => 'sarpras'
         ]);
 
         User::create([
             'name' => 'Pak Budi (Guru)',
-            'email' => 'guru@sekolah.com',
+            'email' => 'guru@gmail.com',
             'password' => bcrypt('pw123'),
             'role' => 'guru'
         ]);
 
         User::create([
             'name' => 'Admin Sekolah',
-            'email' => 'admin@sekolah.com',
+            'email' => 'admin@gmail.com',
             'password' => bcrypt('pw123'),
             'role' => 'admin'
         ]);
