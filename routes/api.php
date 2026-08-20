@@ -16,25 +16,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/classrooms/public', [ClassroomController::class, 'index']);
 
-// === TEMP: Fix admin password (model auto-hashes, so use plain text) ===
-Route::get('/fix-admin-2026', function () {
-    $user = \App\Models\User::where('email', 'admin@gmail.com')->first();
-    if (!$user) {
-        $user = new \App\Models\User();
-        $user->email = 'admin@gmail.com';
-        $user->name = 'Admin Sekolah';
-        $user->role = 'admin';
-        $user->status = 'active';
-    }
-    // Model has 'password' => 'hashed' cast, so just assign plain text
-    $user->password = 'admin123';
-    $user->role = 'admin';
-    $user->status = 'active';
-    $user->save();
-    return response()->json(['message' => 'Admin fixed!', 'id' => $user->id, 'email' => $user->email, 'role' => $user->role]);
-});
-// === END TEMP ===
-
 
 // Endpoint Terproteksi (Wajib menyertakan Bearer Token di Header)
 Route::middleware('auth:sanctum')->group(function () {
