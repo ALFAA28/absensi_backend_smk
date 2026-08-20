@@ -1,7 +1,7 @@
 --
 -- PostgreSQL database dump
 --
-\ restrict 5jtN1nOzEMNSA5TZy8QuZgagMIFF9GIxQx1Q8Gy7vX2K2qtDs4G2zfPg0z5NBn4 -- Dumped from database version 18.4 (c9a59a4)
+
 -- Dumped by pg_dump version 18.1
 SET
     statement_timeout = 0;
