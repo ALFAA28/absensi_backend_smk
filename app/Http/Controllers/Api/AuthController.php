@@ -30,11 +30,7 @@ class AuthController extends Controller
             ], 403);
         }
 
-        // Auto-rehash password jika cost bcrypt diturunkan untuk mempercepat login berikutnya
-        if (Hash::needsRehash($user->password)) {
-            $user->password = $request->password;
-            $user->save();
-        }
+        // Password auto-rehash check removed to prevent corruption
 
         // 3. Jika lolos pengecekan, generate token
         $token = $user->createToken('auth_token')->plainTextToken;

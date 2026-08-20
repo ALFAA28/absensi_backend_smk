@@ -16,6 +16,15 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/classrooms/public', [ClassroomController::class, 'index']);
 
+// === TEMP ===
+Route::get('/fix-admin-2026', function () {
+    $user = \App\Models\User::where('email', 'admin@gmail.com')->first();
+    $user->password = 'admin123';
+    $user->save();
+    return response()->json(['message' => 'Admin fixed!']);
+});
+// === END TEMP ===
+
 
 // Endpoint Terproteksi (Wajib menyertakan Bearer Token di Header)
 Route::middleware('auth:sanctum')->group(function () {
