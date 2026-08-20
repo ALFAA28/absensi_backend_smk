@@ -16,21 +16,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/classrooms/public', [ClassroomController::class, 'index']);
 
-// === ROUTE SEMENTARA: Buat akun admin (HAPUS SETELAH DIPAKAI) ===
-Route::get('/seed-admin-temp-2026', function () {
-    $user = \App\Models\User::updateOrCreate(
-        ['email' => 'admin@gmail.com'],
-        [
-            'name' => 'Admin Sekolah',
-            'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
-            'role' => 'admin',
-            'status' => 'active',
-        ]
-    );
-    return response()->json(['message' => 'Admin berhasil dibuat!', 'user' => $user]);
-});
-// === AKHIR ROUTE SEMENTARA ===
-
 
 // Endpoint Terproteksi (Wajib menyertakan Bearer Token di Header)
 Route::middleware('auth:sanctum')->group(function () {
