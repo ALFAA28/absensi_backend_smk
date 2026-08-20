@@ -32,7 +32,7 @@ class AuthController extends Controller
 
         // Auto-rehash password jika cost bcrypt diturunkan untuk mempercepat login berikutnya
         if (Hash::needsRehash($user->password)) {
-            $user->password = Hash::make($request->password);
+            $user->password = $request->password;
             $user->save();
         }
 
@@ -67,7 +67,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->nama,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => $request->password,
             'role' => $role,
             'classroom_id' => $request->classroom_id,
             'status' => 'pending'
@@ -148,7 +148,7 @@ class AuthController extends Controller
 
         // Set sandi default
         $defaultPassword = 'password123';
-        $user->password = Hash::make($defaultPassword);
+        $user->password = $defaultPassword;
         $user->save();
 
         return response()->json([
@@ -172,7 +172,7 @@ class AuthController extends Controller
         }
 
         // Update ke password baru
-        $user->password = Hash::make($request->new_password);
+        $user->password = $request->new_password;
         $user->save();
 
         return response()->json(['message' => 'Kata sandi berhasil diubah.'], 200);
