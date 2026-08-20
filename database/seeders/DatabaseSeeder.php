@@ -21,21 +21,21 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Staf Sarpras',
             'email' => 'sarpras@gmail.com',
-            'password' => bcrypt('pw123'),
+            'password' => 'pw123',
             'role' => 'sarpras'
         ]);
 
         User::create([
             'name' => 'Pak Budi (Guru)',
             'email' => 'guru@gmail.com',
-            'password' => bcrypt('pw123'),
+            'password' => 'pw123',
             'role' => 'guru'
         ]);
 
         User::create([
             'name' => 'Admin Sekolah',
             'email' => 'admin@gmail.com',
-            'password' => bcrypt('pw123'),
+            'password' => 'pw123',
             'role' => 'admin'
         ]);
     }
