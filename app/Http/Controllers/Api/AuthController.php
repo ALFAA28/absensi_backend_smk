@@ -48,7 +48,6 @@ class AuthController extends Controller
         ], 200);
     }
 
-    // Fungsi untuk memproses registrasi dari React
     public function register(Request $request)
     {
         $request->validate([
@@ -56,6 +55,8 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
             'classroom_id' => 'nullable|exists:classrooms,id',
+            'nrg' => 'nullable|string|max:50',
+            'app_source' => 'nullable|string|in:absensi,storing'
         ]);
 
         $role = $request->classroom_id ? 'wali_kelas' : 'guru_mapel';
@@ -66,6 +67,8 @@ class AuthController extends Controller
             'password' => $request->password,
             'role' => $role,
             'classroom_id' => $request->classroom_id,
+            'nrg' => $request->nrg,
+            'app_source' => $request->app_source ?? 'absensi',
             'status' => 'pending'
         ]);
 
@@ -182,6 +185,8 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
             'role' => 'required|string|in:wali_kelas,guru_mapel,admin,sarpras',
             'classroom_id' => 'nullable|exists:classrooms,id',
+            'nrg' => 'nullable|string|max:50',
+            'app_source' => 'nullable|string|in:absensi,storing'
         ]);
 
         $user = User::create([
@@ -190,6 +195,8 @@ class AuthController extends Controller
             'password' => $request->password,
             'role' => $request->role,
             'classroom_id' => $request->role === 'wali_kelas' ? $request->classroom_id : null,
+            'nrg' => $request->nrg,
+            'app_source' => $request->app_source ?? 'absensi',
             'status' => 'active'
         ]);
 

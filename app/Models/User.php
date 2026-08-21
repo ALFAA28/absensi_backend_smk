@@ -27,7 +27,9 @@ class User extends Authenticatable
         'role',
         'status',
         'kelas',
-        'classroom_id'
+        'classroom_id',
+        'nrg',
+        'app_source'
     ];
 
     public function classroom()
