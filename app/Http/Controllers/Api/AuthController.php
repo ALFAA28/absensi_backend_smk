@@ -13,6 +13,7 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+            'app_source' => 'nullable|string|in:absensi,storing'
         ]);
 
         // Cari user beserta nama kelas yang diampunya
@@ -30,18 +31,38 @@ class AuthController extends Controller
             ], 403);
         }
 
-        // Password auto-rehash check removed to prevent corruption
+        // 3. Validasi Pemisahan Hak Akses Platform (Web Absensi vs Web Storing Modul)
+        $targetApp = $request->input('app_source', 'absensi');
+        $userApp = $user->app_source ?? 'absensi';
 
-        // 3. Jika lolos pengecekan, generate token
+        if ($user->role !== 'admin') {
+            if ($targetApp === 'absensi' && $userApp === 'storing') {
+                return response()->json([
+                    'message' => 'Akun ini terdaftar khusus untuk Storing Modul dan tidak dapat digunakan pada Web Absensi.'
+                ], 403);
+            }
+
+            if ($targetApp === 'storing' && $userApp === 'absensi') {
+                return response()->json([
+                    'message' => 'Akun ini terdaftar untuk Web Absensi dan tidak dapat digunakan pada Web Storing Modul.'
+                ], 403);
+            }
+        }
+
+        // 4. Jika lolos pengecekan, generate token
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'message' => 'Login Berhasil',
             'token' => $token,
             'user' => [
+                'id' => $user->id,
                 'name' => $user->name,
+                'email' => $user->email,
                 'role' => $user->role,
                 'status' => $user->status,
+                'app_source' => $userApp,
+                'nrg' => $user->nrg,
                 'managed_class' => $user->classroom ? $user->classroom->name : null,
                 'classroom_id' => $user->classroom_id
             ]
@@ -59,16 +80,17 @@ class AuthController extends Controller
             'app_source' => 'nullable|string|in:absensi,storing'
         ]);
 
-        $role = $request->classroom_id ? 'wali_kelas' : 'guru_mapel';
+        $appSource = $request->app_source ?? 'absensi';
+        $role = ($appSource === 'absensi' && $request->classroom_id) ? 'wali_kelas' : 'guru_mapel';
 
         $user = User::create([
             'name' => $request->nama,
             'email' => $request->email,
             'password' => $request->password,
             'role' => $role,
-            'classroom_id' => $request->classroom_id,
+            'classroom_id' => $appSource === 'absensi' ? $request->classroom_id : null,
             'nrg' => $request->nrg,
-            'app_source' => $request->app_source ?? 'absensi',
+            'app_source' => $appSource,
             'status' => 'pending'
         ]);
 
@@ -203,12 +225,14 @@ class AuthController extends Controller
         return response()->json(['message' => 'Akun berhasil ditambahkan', 'data' => $user], 201);
     }
 
-    // Fungsi untuk memperbarui role dan kelas binaan pengguna oleh Admin
+    // Fungsi untuk memperbarui role, kelas binaan, sumber akun, dan NRG pengguna oleh Admin
     public function updateRole(Request $request, $id)
     {
         $request->validate([
             'role' => 'required|string|in:wali_kelas,guru_mapel,admin,sarpras',
-            'classroom_id' => 'nullable|exists:classrooms,id'
+            'classroom_id' => 'nullable|exists:classrooms,id',
+            'app_source' => 'nullable|string|in:absensi,storing',
+            'nrg' => 'nullable|string|max:50'
         ]);
 
         $user = User::find($id);
@@ -219,7 +243,13 @@ class AuthController extends Controller
 
         $user->role = $request->role;
         if ($request->has('classroom_id')) {
-            $user->classroom_id = $request->classroom_id;
+            $user->classroom_id = $request->role === 'wali_kelas' ? $request->classroom_id : null;
+        }
+        if ($request->has('app_source')) {
+            $user->app_source = $request->app_source;
+        }
+        if ($request->has('nrg')) {
+            $user->nrg = $request->nrg;
         }
         $user->save();
 
