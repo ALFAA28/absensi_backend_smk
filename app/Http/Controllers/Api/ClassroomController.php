@@ -7,16 +7,31 @@ use App\Models\Classroom;
 
 class ClassroomController extends Controller
 {
-    // Mengambil semua data kelas/jurusan
-    public function index()
+    // Mengambil data kelas/jurusan (Jika wali_kelas, hanya kelas binaannya)
+    public function index(Request $request)
     {
+        $user = $request->user();
+        if ($user && $user->role === 'wali_kelas') {
+            if ($user->classroom_id) {
+                $classrooms = Classroom::where('id', $user->classroom_id)->get();
+            } else {
+                $classrooms = collect([]);
+            }
+            return response()->json($classrooms, 200);
+        }
+
         $classrooms = Classroom::all();
         return response()->json($classrooms, 200);
     }
 
-    // Menyimpan kelas/jurusan baru ke database
+    // Menyimpan kelas/jurusan baru ke database (Hanya Admin)
     public function store(Request $request)
     {
+        $user = $request->user();
+        if ($user && $user->role !== 'admin') {
+            return response()->json(['message' => 'Hanya Admin yang dapat menambahkan kelas/jurusan.'], 403);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255|unique:classrooms,name',
             'grade' => 'required|in:10,11,12',
@@ -32,23 +47,19 @@ class ClassroomController extends Controller
             'academic_batch_id' => $request->academic_batch_id
         ]);
 
-        $user = $request->user();
-
-        // 2. Jika yang membuat adalah wali_kelas dan belum punya kelas binaan, otomatis set kelas ini untuknya
-        if ($user->role === 'wali_kelas' && empty($user->classroom_id)) {
-            $user->classroom_id = $classroom->id;
-            $user->save();
-        }
-
         return response()->json([
-            'message' => 'Jurusan/Kelas berhasil ditambahkan dan otomatis terhubung!',
-            'data' => $classroom,
-            'assigned_classroom_id' => $user->classroom_id // Mengirim info kelas binaan terbaru
+            'message' => 'Jurusan/Kelas berhasil ditambahkan!',
+            'data' => $classroom
         ], 201);
     }
 
     public function update(Request $request, $id)
     {
+        $user = $request->user();
+        if ($user && $user->role !== 'admin') {
+            return response()->json(['message' => 'Hanya Admin yang dapat mengubah data kelas/jurusan.'], 403);
+        }
+
         $classroom = Classroom::find($id);
         if (!$classroom) {
             return response()->json(['message' => 'Jurusan/Kelas tidak ditemukan'], 404);
@@ -71,9 +82,14 @@ class ClassroomController extends Controller
         return response()->json(['message' => 'Jurusan/Kelas berhasil diperbarui', 'data' => $classroom], 200);
     }
 
-    // Menghapus kelas/jurusan dari database secara permanen
-    public function destroy($id)
+    // Menghapus kelas/jurusan dari database secara permanen (Hanya Admin)
+    public function destroy(Request $request, $id)
     {
+        $user = $request->user();
+        if ($user && $user->role !== 'admin') {
+            return response()->json(['message' => 'Hanya Admin yang dapat menghapus kelas/jurusan.'], 403);
+        }
+
         $classroom = Classroom::find($id);
 
         if (!$classroom) {

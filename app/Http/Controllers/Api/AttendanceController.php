@@ -11,6 +11,8 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
+        $user = $request->user();
+
         $query = Attendance::query()
             ->join('students', 'attendances.student_id', '=', 'students.id')
             ->join('classrooms', 'students.classroom_id', '=', 'classrooms.id')
@@ -27,6 +29,17 @@ class AttendanceController extends Controller
                 'classrooms.name as classroom_name',
                 'subjects.nama_mapel'
             );
+
+        // KETAT: Jika role wali_kelas, kunci hanya ke classroom_id miliknya
+        if ($user && $user->role === 'wali_kelas') {
+            if ($user->classroom_id) {
+                $query->where('students.classroom_id', $user->classroom_id);
+            } else {
+                $query->whereRaw('1 = 0');
+            }
+        } else if ($request->filled('classroom_id')) {
+            $query->where('students.classroom_id', $request->classroom_id);
+        }
 
         if ($request->filled('tanggal')) {
             $query->where('attendances.date', $request->tanggal);
@@ -61,11 +74,7 @@ class AttendanceController extends Controller
             $query->where('attendances.student_id', $request->student_id);
         }
 
-        if ($request->filled('classroom_id')) {
-            $query->where('students.classroom_id', $request->classroom_id);
-        }
-
-        if ($request->filled('batch_id')) {
+        if ($user && $user->role !== 'wali_kelas' && $request->filled('batch_id')) {
             $batchId = $request->batch_id;
             $query->where(function ($q) use ($batchId) {
                 $q->where('classrooms.grade', $batchId)
@@ -118,6 +127,13 @@ class AttendanceController extends Controller
             'attendances.*.status' => 'required|in:Hadir,Sakit,Izin,Alfa',
         ]);
 
+        $user = $request->user();
+        if ($user && $user->role === 'wali_kelas') {
+            if (!$user->classroom_id) {
+                return response()->json(['message' => 'Anda belum memiliki kelas binaan.'], 403);
+            }
+        }
+
         // Ambil tahun ajaran yang sedang aktif di database
         $activeYear = AcademicYear::where('is_active', true)->first();
 
@@ -127,9 +143,18 @@ class AttendanceController extends Controller
 
         $savedCount = 0;
         foreach ($request->attendances as $item) {
-            // Lewati siswa yang berstatus Nonaktif, Lulus, atau Drop Out
             $student = \App\Models\Student::find($item['student_id']);
-            if ($student && ($student->status === 'Nonaktif' || $student->status === 'Lulus' || $student->status === 'Drop Out')) {
+            if (!$student) {
+                continue;
+            }
+
+            // Keamanan: wali_kelas hanya bisa mengabsen siswa di kelasnya sendiri
+            if ($user && $user->role === 'wali_kelas' && $student->classroom_id != $user->classroom_id) {
+                continue;
+            }
+
+            // Lewati siswa yang berstatus Nonaktif, Lulus, atau Drop Out
+            if ($student->status === 'Nonaktif' || $student->status === 'Lulus' || $student->status === 'Drop Out') {
                 continue;
             }
 
@@ -143,7 +168,7 @@ class AttendanceController extends Controller
                     'notes' => $item['notes'] ?? null,
                     'subject_id' => null, // Karena sudah nullable dan tidak dipakai lagi
                     'academic_year_id' => $activeYear->id,
-                    'created_by' => $request->user()->id,
+                    'created_by' => $user->id,
                 ]
             );
             $savedCount++;
@@ -154,9 +179,16 @@ class AttendanceController extends Controller
 
     public function update(Request $request, $id)
     {
-        $attendance = Attendance::find($id);
+        $attendance = Attendance::with('student')->find($id);
         if (!$attendance) {
             return response()->json(['message' => 'Absensi tidak ditemukan'], 404);
+        }
+
+        $user = $request->user();
+        if ($user && $user->role === 'wali_kelas') {
+            if (!$attendance->student || $attendance->student->classroom_id != $user->classroom_id) {
+                return response()->json(['message' => 'Anda tidak memiliki akses untuk mengubah absensi siswa di kelas lain.'], 403);
+            }
         }
 
         $request->validate([
@@ -180,11 +212,18 @@ class AttendanceController extends Controller
         return response()->json(['message' => 'Absensi berhasil diperbarui', 'data' => $attendance], 200);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $attendance = Attendance::find($id);
+        $attendance = Attendance::with('student')->find($id);
         if (!$attendance) {
             return response()->json(['message' => 'Absensi tidak ditemukan'], 404);
+        }
+
+        $user = $request->user();
+        if ($user && $user->role === 'wali_kelas') {
+            if (!$attendance->student || $attendance->student->classroom_id != $user->classroom_id) {
+                return response()->json(['message' => 'Anda tidak memiliki akses untuk menghapus absensi siswa di kelas lain.'], 403);
+            }
         }
 
         $attendance->delete();
