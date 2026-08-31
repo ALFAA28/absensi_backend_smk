@@ -30,8 +30,8 @@ class AttendanceController extends Controller
                 'subjects.nama_mapel'
             );
 
-        // KETAT: Jika role wali_kelas, kunci hanya ke classroom_id miliknya
-        if ($user && $user->role === 'wali_kelas') {
+        // KETAT: Jika role wali_kelas, kunci hanya ke classroom_id miliknya (kecuali scope=all untuk dashboard)
+        if ($user && $user->role === 'wali_kelas' && $request->query('scope') !== 'all') {
             if ($user->classroom_id) {
                 $query->where('students.classroom_id', $user->classroom_id);
             } else {

@@ -7,11 +7,11 @@ use App\Models\Classroom;
 
 class ClassroomController extends Controller
 {
-    // Mengambil data kelas/jurusan (Jika wali_kelas, hanya kelas binaannya)
+    // Mengambil data kelas/jurusan (Jika wali_kelas, hanya kelas binaannya — kecuali scope=all untuk dashboard)
     public function index(Request $request)
     {
         $user = $request->user();
-        if ($user && $user->role === 'wali_kelas') {
+        if ($user && $user->role === 'wali_kelas' && $request->query('scope') !== 'all') {
             if ($user->classroom_id) {
                 $classrooms = Classroom::where('id', $user->classroom_id)->get();
             } else {

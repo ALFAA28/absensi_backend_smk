@@ -28,8 +28,8 @@ class StudentController extends Controller
                 },
             ]);
 
-        // Jika wali_kelas, hanya tampilkan siswa di kelasnya
-        if ($user && $user->role === 'wali_kelas') {
+        // Jika wali_kelas, hanya tampilkan siswa di kelasnya (kecuali scope=all untuk dashboard)
+        if ($user && $user->role === 'wali_kelas' && $request->query('scope') !== 'all') {
             if ($user->classroom_id) {
                 $query->where('classroom_id', $user->classroom_id);
             } else {
