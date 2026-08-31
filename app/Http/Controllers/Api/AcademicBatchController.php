@@ -11,18 +11,7 @@ class AcademicBatchController extends Controller
 {
     public function index(Request $request)
     {
-        $user = $request->user();
-        if ($user && $user->role === 'wali_kelas') {
-            if ($user->classroom_id) {
-                $classroom = Classroom::find($user->classroom_id);
-                if ($classroom && $classroom->academic_batch_id) {
-                    $batches = AcademicBatch::where('id', $classroom->academic_batch_id)->get();
-                    return response()->json($batches, 200);
-                }
-            }
-            return response()->json([], 200);
-        }
-
+        // Semua user (admin, wali_kelas) bisa melihat semua angkatan
         return response()->json(AcademicBatch::all(), 200);
     }
 
