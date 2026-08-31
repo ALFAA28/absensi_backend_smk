@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\Classroom;
 
 class ClassroomController extends Controller
@@ -33,7 +34,12 @@ class ClassroomController extends Controller
         }
 
         $request->validate([
-            'name' => 'required|string|max:255|unique:classrooms,name',
+            'name' => [
+                'required', 'string', 'max:255',
+                Rule::unique('classrooms')->where(function ($query) use ($request) {
+                    return $query->where('academic_batch_id', $request->academic_batch_id);
+                }),
+            ],
             'grade' => 'required|in:10,11,12',
             'singkatan' => 'required|string|max:50',
             'academic_batch_id' => 'required|exists:academic_batches,id',
@@ -66,7 +72,12 @@ class ClassroomController extends Controller
         }
 
         $request->validate([
-            'name' => 'required|string|max:255|unique:classrooms,name,' . $id,
+            'name' => [
+                'required', 'string', 'max:255',
+                Rule::unique('classrooms')->where(function ($query) use ($request) {
+                    return $query->where('academic_batch_id', $request->academic_batch_id);
+                })->ignore($id),
+            ],
             'grade' => 'required|in:10,11,12',
             'singkatan' => 'required|string|max:50',
             'academic_batch_id' => 'required|exists:academic_batches,id',
