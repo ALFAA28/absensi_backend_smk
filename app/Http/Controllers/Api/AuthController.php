@@ -103,7 +103,14 @@ class AuthController extends Controller
     // Fungsi untuk dipanggil di halaman Manajemen Akun (Admin)
     public function getUsers()
     {
-        $users = User::with('classroom')->where('id', '!=', auth()->id())->orderBy('created_at', 'desc')->get();
+        $users = User::with('classroom')
+            ->where('id', '!=', auth()->id())
+            ->where(function($query) {
+                $query->where('app_source', 'absensi')
+                      ->orWhereNull('app_source');
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
         return response()->json($users, 200);
     }
 
