@@ -28,8 +28,8 @@ class ClassroomController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
-        if ($user && !in_array($user->role, ['admin', 'wali_kelas'])) {
-            return response()->json(['message' => 'Hanya Admin atau Wali Kelas yang dapat menambahkan kelas/jurusan.'], 403);
+        if ($user && !in_array($user->role, ['admin', 'guru_piket', 'wali_kelas'])) {
+            return response()->json(['message' => 'Hanya Admin, Guru Piket, atau Wali Kelas yang dapat menambahkan kelas/jurusan.'], 403);
         }
 
         $request->validate([
@@ -74,8 +74,8 @@ class ClassroomController extends Controller
             return response()->json(['message' => 'Jurusan/Kelas tidak ditemukan'], 404);
         }
 
-        // Hanya admin, atau wali kelas yang membuat kelas ini yang boleh mengedit
-        if ($user && $user->role !== 'admin') {
+        // Hanya admin, guru piket, atau wali kelas yang membuat kelas ini yang boleh mengedit
+        if ($user && !in_array($user->role, ['admin', 'guru_piket'])) {
             if ($user->role !== 'wali_kelas' || $classroom->user_id !== $user->id) {
                 return response()->json(['message' => 'Anda tidak memiliki hak untuk mengubah kelas ini.'], 403);
             }
@@ -113,8 +113,8 @@ class ClassroomController extends Controller
             return response()->json(['message' => 'Jurusan/Kelas tidak ditemukan'], 404);
         }
 
-        // Hanya admin, atau wali kelas yang membuat kelas ini yang boleh menghapus
-        if ($user && $user->role !== 'admin') {
+        // Hanya admin, guru piket, atau wali kelas yang membuat kelas ini yang boleh menghapus
+        if ($user && !in_array($user->role, ['admin', 'guru_piket'])) {
             if ($user->role !== 'wali_kelas' || $classroom->user_id !== $user->id) {
                 return response()->json(['message' => 'Anda tidak memiliki hak untuk menghapus kelas ini.'], 403);
             }
