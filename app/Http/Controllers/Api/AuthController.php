@@ -81,7 +81,7 @@ class AuthController extends Controller
         ]);
 
         $appSource = $request->app_source ?? 'absensi';
-        $role = ($appSource === 'absensi' && $request->classroom_id) ? 'wali_kelas' : 'guru_mapel';
+        $role = ($appSource === 'absensi' && $request->classroom_id) ? 'wali_kelas' : 'guru_piket';
 
         $user = User::create([
             'name' => $request->nama,
@@ -212,7 +212,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'required|string|in:wali_kelas,guru_mapel,admin,sarpras',
+            'role' => 'required|string|in:wali_kelas,guru_mapel,guru_piket,admin,sarpras',
             'classroom_id' => 'nullable|exists:classrooms,id',
             'nrg' => 'nullable|string|max:50',
             'app_source' => 'nullable|string|in:absensi,storing'
@@ -236,7 +236,7 @@ class AuthController extends Controller
     public function updateRole(Request $request, $id)
     {
         $request->validate([
-            'role' => 'required|string|in:wali_kelas,guru_mapel,admin,sarpras',
+            'role' => 'required|string|in:wali_kelas,guru_mapel,guru_piket,admin,sarpras',
             'classroom_id' => 'nullable|exists:classrooms,id',
             'app_source' => 'nullable|string|in:absensi,storing',
             'nrg' => 'nullable|string|max:50'
