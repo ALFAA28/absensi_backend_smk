@@ -81,14 +81,13 @@ class AuthController extends Controller
         ]);
 
         $appSource = $request->app_source ?? 'absensi';
-        $role = ($appSource === 'absensi' && $request->classroom_id) ? 'wali_kelas' : 'guru_piket';
+        $role = 'guru_piket';
 
         $user = User::create([
             'name' => $request->nama,
             'email' => $request->email,
             'password' => $request->password,
             'role' => $role,
-            'classroom_id' => $appSource === 'absensi' ? $request->classroom_id : null,
             'nrg' => $request->nrg,
             'app_source' => $appSource,
             'status' => 'pending'
@@ -212,7 +211,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'required|string|in:wali_kelas,guru_piket,admin,sarpras',
+            'role' => 'required|string|in:guru_piket,admin,sarpras',
             'classroom_id' => 'nullable|exists:classrooms,id',
             'nrg' => 'nullable|string|max:50',
             'app_source' => 'nullable|string|in:absensi,storing'
@@ -223,7 +222,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => $request->password,
             'role' => $request->role,
-            'classroom_id' => $request->role === 'wali_kelas' ? $request->classroom_id : null,
+            'classroom_id' => null,
             'nrg' => $request->nrg,
             'app_source' => $request->app_source ?? 'absensi',
             'status' => 'active'
@@ -236,7 +235,7 @@ class AuthController extends Controller
     public function updateRole(Request $request, $id)
     {
         $request->validate([
-            'role' => 'required|string|in:wali_kelas,guru_piket,admin,sarpras',
+            'role' => 'required|string|in:guru_piket,admin,sarpras',
             'classroom_id' => 'nullable|exists:classrooms,id',
             'app_source' => 'nullable|string|in:absensi,storing',
             'nrg' => 'nullable|string|max:50'
@@ -250,7 +249,7 @@ class AuthController extends Controller
 
         $user->role = $request->role;
         if ($request->has('classroom_id')) {
-            $user->classroom_id = $request->role === 'wali_kelas' ? $request->classroom_id : null;
+            $user->classroom_id = null;
         }
         if ($request->has('app_source')) {
             $user->app_source = $request->app_source;

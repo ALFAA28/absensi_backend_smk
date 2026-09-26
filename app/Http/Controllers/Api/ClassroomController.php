@@ -8,18 +8,9 @@ use App\Models\Classroom;
 
 class ClassroomController extends Controller
 {
-    // Mengambil data kelas/jurusan (Jika wali_kelas, hanya kelas binaannya — kecuali scope=all untuk dashboard)
+    // Mengambil data kelas/jurusan
     public function index(Request $request)
     {
-        $user = $request->user();
-        if ($user && $user->role === 'wali_kelas' && $request->query('scope') !== 'all') {
-            // Wali kelas melihat kelas yang mereka buat (user_id) ATAU kelas binaan utama mereka (classroom_id)
-            $classrooms = Classroom::where('user_id', $user->id)
-                                   ->orWhere('id', $user->classroom_id)
-                                   ->get();
-            return response()->json($classrooms, 200);
-        }
-
         $classrooms = Classroom::all();
         return response()->json($classrooms, 200);
     }
@@ -28,8 +19,8 @@ class ClassroomController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
-        if ($user && !in_array($user->role, ['admin', 'guru_piket', 'wali_kelas'])) {
-            return response()->json(['message' => 'Hanya Admin, Guru Piket, atau Wali Kelas yang dapat menambahkan kelas/jurusan.'], 403);
+        if ($user && !in_array($user->role, ['admin', 'guru_piket'])) {
+            return response()->json(['message' => 'Hanya Admin atau Guru Piket yang dapat menambahkan kelas/jurusan.'], 403);
         }
 
         $request->validate([
@@ -44,20 +35,12 @@ class ClassroomController extends Controller
             'academic_batch_id' => 'required|exists:academic_batches,id',
         ]);
 
-        // 1. Buat kelas baru di database
         $classroom = Classroom::create([
             'name' => $request->name,
             'grade' => $request->grade,
             'singkatan' => $request->singkatan ?? $request->name,
             'academic_batch_id' => $request->academic_batch_id,
-            'user_id' => $user->id ?? null, // Simpan ID pembuat
         ]);
-
-        // Jika user adalah wali kelas dan belum memiliki kelas binaan, jadikan ini sebagai kelas binaannya
-        if ($user && $user->role === 'wali_kelas' && !$user->classroom_id) {
-            $user->classroom_id = $classroom->id;
-            $user->save();
-        }
 
         return response()->json([
             'message' => 'Jurusan/Kelas berhasil ditambahkan!',
@@ -74,11 +57,9 @@ class ClassroomController extends Controller
             return response()->json(['message' => 'Jurusan/Kelas tidak ditemukan'], 404);
         }
 
-        // Hanya admin, guru piket, atau wali kelas yang membuat kelas ini yang boleh mengedit
+        // Hanya admin atau guru piket yang boleh mengedit
         if ($user && !in_array($user->role, ['admin', 'guru_piket'])) {
-            if ($user->role !== 'wali_kelas' || $classroom->user_id !== $user->id) {
-                return response()->json(['message' => 'Anda tidak memiliki hak untuk mengubah kelas ini.'], 403);
-            }
+            return response()->json(['message' => 'Anda tidak memiliki hak untuk mengubah kelas ini.'], 403);
         }
 
         $request->validate([
@@ -113,11 +94,9 @@ class ClassroomController extends Controller
             return response()->json(['message' => 'Jurusan/Kelas tidak ditemukan'], 404);
         }
 
-        // Hanya admin, guru piket, atau wali kelas yang membuat kelas ini yang boleh menghapus
+        // Hanya admin atau guru piket yang boleh menghapus
         if ($user && !in_array($user->role, ['admin', 'guru_piket'])) {
-            if ($user->role !== 'wali_kelas' || $classroom->user_id !== $user->id) {
-                return response()->json(['message' => 'Anda tidak memiliki hak untuk menghapus kelas ini.'], 403);
-            }
+            return response()->json(['message' => 'Anda tidak memiliki hak untuk menghapus kelas ini.'], 403);
         }
 
         $classroom->delete();
