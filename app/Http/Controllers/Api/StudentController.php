@@ -136,15 +136,44 @@ class StudentController extends Controller
 
     public function bulkStore(Request $request)
     {
-        $request->validate([
-            'students' => 'required|array',
-            'students.*.nisn' => 'required|string',
-            'students.*.name' => 'required|string',
-            'students.*.classroom_id' => 'required|exists:classrooms,id',
-        ]);
+        $students = $request->input('students');
 
+        if (empty($students) || !is_array($students)) {
+            return response()->json([
+                'message' => 'Format file tidak valid atau data kosong. Pastikan Anda menggunakan template Excel yang benar.'
+            ], 422);
+        }
+
+        $errors = [];
         $inserted = [];
-        foreach ($request->students as $s) {
+
+        // Validasi presisi setiap baris
+        foreach ($students as $index => $s) {
+            $row = $index + 2; // Baris 1 biasanya header di Excel
+            
+            if (empty($s['nisn']) || trim($s['nisn']) === '') {
+                $errors[] = "Baris ke-{$row}: Kolom NISN kosong.";
+            }
+            if (empty($s['name']) || trim($s['name']) === 'Tanpa Nama') {
+                $errors[] = "Baris ke-{$row}: Kolom Nama kosong.";
+            }
+            if (empty($s['classroom_id'])) {
+                $errors[] = "Baris ke-{$row}: Terjadi kesalahan internal (ID Kelas hilang).";
+            }
+        }
+
+        if (count($errors) > 0) {
+            $errorMsg = "Gagal mengimpor, terdapat baris yang tidak valid:\n" . implode("\n", array_slice($errors, 0, 5));
+            if (count($errors) > 5) {
+                $errorMsg .= "\n...dan " . (count($errors) - 5) . " kesalahan lainnya.";
+            }
+            return response()->json([
+                'message' => $errorMsg,
+                'errors' => $errors
+            ], 422);
+        }
+
+        foreach ($students as $s) {
             $student = Student::updateOrCreate(
                 ['nisn' => $s['nisn']],
                 [
